@@ -2,6 +2,7 @@ import { Roboto } from 'next/font/google';
 import './globals.css';
 import ContextProvider from '../components/ContextProvider';
 import Header from '../components/layout/Header.jsx';
+import { Toaster } from 'react-hot-toast';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', '500', '700'] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <ContextProvider>
+        <Toaster />
         <body className={roboto.className}>
           <main className="max-w-4xl border mx-auto p-4">
             <Header />

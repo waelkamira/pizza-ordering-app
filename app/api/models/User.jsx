@@ -17,7 +17,7 @@ const UserSchema = new Schema(
     },
     image: {
       type: String,
-      default: '',
+      default: 'bg9erntqthowjvavmwfs.png',
     },
   },
   { timestamps: true }

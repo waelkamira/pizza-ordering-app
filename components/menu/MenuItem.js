@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function MenuItem() {
+export default function MenuItem({ image, itemName, description, basePrice }) {
   return (
     <div className="bg-gray-600/40 p-4 rounded-lg text-center hover:bg-white transition-all hover:shadow-xl">
       <div className="text-center">

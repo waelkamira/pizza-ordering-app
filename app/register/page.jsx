@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-
+import { CldImage } from 'next-cloudinary';
 export default function Register() {
   const session = useSession();
   const status = session?.status;
@@ -78,12 +78,12 @@ export default function Register() {
             className="flex gap-4 justify-center"
             onClick={() => signIn('google', { callbackUrl: '/login' })}
           >
-            <Image
-              src={'/google.png'}
+            <CldImage
+              src={'/wm1v3g9lql9dgrgf55nj.png'}
               width={24}
               height={24}
               alt="google"
-            ></Image>
+            ></CldImage>
             Sign Up With Google
           </button>
 

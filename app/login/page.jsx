@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import React, { useState } from 'react';
+import { CldImage } from 'next-cloudinary';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -50,12 +51,12 @@ export default function Login() {
           className="flex gap-4 justify-center"
           onClick={() => signIn('google', { callbackUrl: '/' })}
         >
-          <Image
-            src={'/google.png'}
+          <CldImage
+            src={'/wm1v3g9lql9dgrgf55nj.png'}
             width={24}
             height={24}
             alt="google"
-          ></Image>
+          ></CldImage>
           Login With Google
         </button>
 

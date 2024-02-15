@@ -4,44 +4,79 @@ import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { CldImage } from 'next-cloudinary';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { right } from '@cloudinary/url-gen/qualifiers/textAlignment';
+import Link from 'next/link';
+import UserTabs from './../../components/layout/UserTabs';
+import EditableImage from '../../components/layout/EditableImage';
 
 export default function ProfilePage() {
   const session = useSession();
-  // console.log('session in profile page', session);
-  const [userName, setUserName] = useState(session?.data?.user?.name || '');
   const { status, data } = session;
-  const [saved, setSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const userImage = session?.data?.user?.image;
   const [imageData, setImageData] = useState(' ');
-  const name = session?.data?.user?.name;
-  // localStorage.setItem('userName', name);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [fetchedProfile, setFetchedProfile] = useState(false);
+  const [formStates, setFormStates] = useState({
+    image: '',
+    name: '',
+    phoneNumber: '',
+    streetAddress: '',
+    postalCod: '',
+    city: '',
+    country: '',
+  });
 
   useEffect(() => {
-    console.log('usrEffect');
+    // console.log('useEffect');
     if (status === 'authenticated') {
-      setUserName(localStorage.getItem('userName'));
-      setImageData(localStorage.getItem('imageData'));
+      fetchData();
     }
-  }, [session, imageData]);
+  }, [session]);
+
+  //! this function to fetch data from mongodb
+  const fetchData = async () =>
+    fetch('/api/profile').then((res) =>
+      res.json().then((res) => {
+        // console.log('this res from useEffect:', res);
+        setIsAdmin(res?.admin);
+        setFetchedProfile(true);
+        setFormStates({
+          image: res.image,
+          name: res.name,
+          phoneNumber: res.phoneNumber,
+          streetAddress: res.streetAddress,
+          postalCod: res.postalCod,
+          city: res.city,
+          country: res.country,
+        });
+      })
+    );
 
   //! this function for changing user name
-  async function handleProfileInfoUpdate(e) {
+  function handleProfileInfoUpdate(e) {
     e.preventDefault();
-    localStorage.setItem('userName', userName);
-    setIsSaving(true);
-    const res = await fetch('/api/profile', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: userName }),
-    });
-    setIsSaving(false);
-    if (res.ok) {
-      setSaved(true);
-    }
+
+    const res = async () => {
+      toast('Saving ...', { duration: 300 });
+
+      await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formStates.name,
+          phoneNumber: formStates.phoneNumber,
+          streetAddress: formStates.streetAddress,
+          postalCod: formStates.postalCod,
+          city: formStates.city,
+          country: formStates.country,
+        }),
+      });
+      toast.success('Successfully Saved!', { duration: 5000 });
+    };
+    res();
   }
 
-  if (status === 'loading') {
+  if (status === 'loading' || !fetchedProfile) {
     return 'loading ...';
   }
 
@@ -49,94 +84,99 @@ export default function ProfilePage() {
     return redirect('/login');
   }
 
-  //! this function for changing profile's image
-  async function handleFileChange(e) {
-    const files = e.target.files;
-    const formData = new FormData();
-    formData.set('file', files[0]);
-    formData.set('upload_preset', 'dq8dx63w');
-
-    const imagePost = async () => {
-      try {
-        const response = await axios
-          //! this function for upload image to cloudinary server
-          .post('https://api.cloudinary.com/v1_1/dh2xlutfu/upload', formData)
-          .then((res) => {
-            console.log('this is res', res);
-
-            //! this function for sending changed image to mongodb
-            async function sendChangedImage() {
-              const imagePublic_id = res?.data?.public_id;
-              console.log('this is imagePublic_id: ', imagePublic_id);
-              await fetch('/api/profileImageChange', {
-                method: 'PUT',
-                body: JSON.stringify({ image: imagePublic_id }),
-                headers: { 'Content-Type': 'application/json' },
-              });
-
-              localStorage.setItem('imageData', imagePublic_id);
-              setImageData(imagePublic_id);
-            }
-            sendChangedImage();
-          });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    imagePost();
-  }
-
   return (
     <section className="mt-8 flex flex-col justify-center items-center">
-      <h1 className="text-center text-primary text-4xl mb-4">Profile</h1>
+      <UserTabs isAdmin={isAdmin} />
 
-      <div className="max-w-lg border rounded-lg p-4 ">
-        {saved && (
-          <h1 className="text-center bg-green-200 p-4 rounded-lg border border-green-300">
-            Profile Saved!
-          </h1>
-        )}
-        {isSaving && (
-          <h1 className="text-center bg-blue-200 p-4 rounded-lg border border-blue-300">
-            Saving!
-          </h1>
-        )}
-        <div className="flex gap-2 items-center justify-center bg-gray-500 p-4 rounded-lg">
-          <div className="border border-orange-300 py-3 px-3 rounded-lg ">
-            <div className="relative h-28 w-full">
-              <CldImage
-                src={`/${imageData || userImage}`}
-                alt="avatar"
-                width={100}
-                height={100}
-                sizes="100vw"
-              ></CldImage>
-            </div>
-
-            <label className="mx-6">
-              <input
-                className="hidden"
-                type="file"
-                onChange={handleFileChange}
-              />
-              <span className="text-[15px] bg-primary cursor-pointer border border-gray-400 text-white px-4 py-1 rounded-lg">
-                Edit
-              </span>
-            </label>
-          </div>
-
+      <div className="max-w-xl border rounded-lg p-4 mt-8">
+        <div className="flex gap-4 items-start justify-center p-4 rounded-lg">
+          <EditableImage routeName={'profile'} />
           <form
-            className="grow flex flex-col"
+            className="grow flex flex-col justify-center items-center"
             onSubmit={handleProfileInfoUpdate}
           >
+            <label htmlFor="input" className="text-start w-full">
+              First And Last Name:
+            </label>
             <input
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="First And Last Name"
+              value={formStates.name}
+              onChange={(e) =>
+                setFormStates({ ...formStates, name: e.target.value })
+              }
+              placeholder="Your Name"
             />
+            <label htmlFor="input" className="text-start w-full">
+              Email:
+            </label>
             <input type="text" disabled value={session?.data?.user?.email} />
-            <button className="bg-primary text-white m-0">Save</button>
+            <label htmlFor="input" className="text-start w-full">
+              Phone Number:
+            </label>
+            <input
+              type="number"
+              value={formStates.phoneNumber}
+              placeholder="Phone Number"
+              onChange={(e) =>
+                setFormStates({ ...formStates, phoneNumber: e.target.value })
+              }
+            />
+            <label htmlFor="input" className="text-start w-full">
+              Street Address:
+            </label>
+            <input
+              type="text"
+              value={formStates.streetAddress}
+              placeholder="Street Address"
+              onChange={(e) =>
+                setFormStates({ ...formStates, streetAddress: e.target.value })
+              }
+            />
+
+            <div className=" flex justify-center items-center gap-4  m-0 px-0">
+              <div>
+                <label htmlFor="input" className="text-start w-full">
+                  Postal Cod:
+                </label>
+                <input
+                  style={{ marginLeft: 0 }}
+                  type="number"
+                  value={formStates.postalCod}
+                  placeholder="Postal Cod"
+                  onChange={(e) =>
+                    setFormStates({ ...formStates, postalCod: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label htmlFor="input" className="text-start w-full">
+                  City:
+                </label>
+                <input
+                  style={{ marginRight: 0 }}
+                  type="text"
+                  value={formStates.city}
+                  placeholder="City"
+                  onChange={(e) =>
+                    setFormStates({ ...formStates, city: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <label htmlFor="input" className="text-start w-full">
+              Country:
+            </label>
+            <input
+              type="text"
+              value={formStates.country}
+              placeholder="Country"
+              onChange={(e) =>
+                setFormStates({ ...formStates, country: e.target.value })
+              }
+            />
+            <button className="bg-primary text-white m-1" type="submit">
+              Save
+            </button>
           </form>
         </div>
       </div>
