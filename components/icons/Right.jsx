@@ -10,6 +10,7 @@ export default function Right({ className = 'w-6 h-6' }) {
         strokeWidth={1.5}
         stroke="currentColor"
         className={className}
+        style={{ color: '#FF5E0E' }}
       >
         <path
           strokeLinecap="round"

@@ -4,45 +4,26 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 
-export default function EditableImage({ routeName }) {
+export default function EditableImage({ routeName, props, setProps }) {
   const session = useSession();
   const { status, data } = session;
   const [imageData, setImageData] = useState(' ');
   const [isAdmin, setIsAdmin] = useState(false);
   const [fetchedProfile, setFetchedProfile] = useState(false);
-  const [formStates, setFormStates] = useState({
-    image: '',
-    name: '',
-    phoneNumber: '',
-    streetAddress: '',
-    postalCod: '',
-    city: '',
-    country: '',
-  });
 
   useEffect(() => {
     // console.log('useEffect');
-    if (status === 'authenticated') {
-      fetchData();
-    }
-  }, [session]);
+    fetchData();
+  }, [imageData]);
 
   //! this function to fetch data from mongodb
   const fetchData = async () =>
-    fetch('/api/profile').then((res) =>
+    fetch(`/api/profile`).then((res) =>
       res.json().then((res) => {
-        // console.log('this res from useEffect:', res);
+        console.log('this res from useEffect:', res);
         setIsAdmin(res?.admin);
         setFetchedProfile(true);
-        setFormStates({
-          image: res.image,
-          name: res.name,
-          phoneNumber: res.phoneNumber,
-          streetAddress: res.streetAddress,
-          postalCod: res.postalCod,
-          city: res.city,
-          country: res.country,
-        });
+        // setImageData(res?.image);
       })
     );
 
@@ -55,49 +36,54 @@ export default function EditableImage({ routeName }) {
     const imagePost = async () => {
       try {
         //! this function for upload image to cloudinary server
-        toast('Uploading ...', {
-          duration: 1000,
+        const promise = new Promise(async (resolve, reject) => {
+          const response = await axios
+            .post('https://api.cloudinary.com/v1_1/dh2xlutfu/upload', formData)
+            .then((res) => {
+              //! this function for sending changed image to mongodb
+              async function sendChangedImage() {
+                const imagePublic_id = res?.data?.public_id;
+                // console.log('this is imagePublic_id: ', imagePublic_id);
+                await fetch(`/api/profile`, {
+                  method: 'PUT',
+                  body: JSON.stringify({
+                    image: imagePublic_id,
+                    email: props.email,
+                  }),
+                  headers: { 'Content-Type': 'application/json' },
+                });
+
+                setImageData(imagePublic_id);
+              }
+
+              sendChangedImage();
+            });
+          if (response) {
+            resolve();
+          } else {
+            reject();
+          }
         });
 
-        const response = await axios
-          .post('https://api.cloudinary.com/v1_1/dh2xlutfu/upload', formData)
-          .then((res) => {
-            console.log('this is res', res);
-
-            //! this function for sending changed image to mongodb
-            async function sendChangedImage() {
-              const imagePublic_id = res?.data?.public_id;
-              console.log('this is imagePublic_id: ', imagePublic_id);
-              await fetch(`/api/${routeName}`, {
-                method: 'PUT',
-                body: JSON.stringify({ image: imagePublic_id }),
-                headers: { 'Content-Type': 'application/json' },
-              });
-
-              setImageData(imagePublic_id);
-            }
-
-            async function functions() {
-              await sendChangedImage();
-              fetchData();
-              toast.success('Successfully Uploaded!', {
-                duration: 3000,
-              });
-            }
-
-            functions();
-          });
+        toast.promise(promise, {
+          loading: 'Uploading Image',
+          success: 'Image Uploaded',
+          error: 'Sorry Something Went Wrong',
+        });
+        location.reload();
       } catch (error) {
         console.log(error);
       }
     };
     imagePost();
   }
+
+  console.log('props from EditableImage', imageData);
   return (
     <div className="flex flex-col py-3 px-3  bg-gray-500 rounded-lg ">
       <div className="flex justify-center items-center mb-2 border border-orange-300 rounded-lg  p-2">
         <CldImage
-          src={`/${formStates.image}`}
+          src={`/${props.image}`}
           alt="avatar"
           width={100}
           height={100}
@@ -111,7 +97,7 @@ export default function EditableImage({ routeName }) {
         <input className="hidden" type="file" onChange={handleFileChange} />
         <div className="flex flex-col justify-center items-center">
           <div className="text-2xl text-white whitespace-nowrap">
-            {formStates.name}
+            {props.name}
           </div>
           <span className="text-lg bg-primary cursor-pointer border border-gray-400 text-white rounded-lg py-1 px-4">
             Edit

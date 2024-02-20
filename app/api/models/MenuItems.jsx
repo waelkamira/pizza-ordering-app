@@ -1,9 +1,14 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
+const ExtraPriceSchema = new Schema({
+  name: String,
+  price: Number,
+});
 const MenuItemSchema = new Schema(
   {
     image: {
       type: String,
+      required: true,
     },
     itemName: {
       type: String,
@@ -17,6 +22,9 @@ const MenuItemSchema = new Schema(
       type: Number,
       required: true,
     },
+    sizes: { type: [ExtraPriceSchema] },
+    integrediants: { type: [ExtraPriceSchema] },
+    category: { type: String },
   },
   { timestamps: true }
 );

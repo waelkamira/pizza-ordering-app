@@ -10,6 +10,7 @@ export default function Left({ className = 'w-6 h-6' }) {
         stroke-width="1.5"
         stroke="currentColor"
         class={className}
+        style={{ color: '#FF5E0E' }}
       >
         <path
           stroke-linecap="round"

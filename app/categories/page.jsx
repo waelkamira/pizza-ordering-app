@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import UserTabs from '../../components/layout/UserTabs';
 import UseProfile from '../../components/UseProfile';
 import toast from 'react-hot-toast';
+import ConfirmDelete from '../../components/layout/ConfirmDelete';
 
 export default function CategoriesPage() {
   const [editedCategory, setEditedCategory] = useState(null);
@@ -16,10 +17,10 @@ export default function CategoriesPage() {
 
   //! this function to fetch categories from Mongodb
   const fetchCategories = async () =>
-    fetch('/api/categories').then((response) =>
-      response.json().then((categories) => {
-        // console.log(categories);
-        setCategories(categories);
+    await fetch('/api/categories').then((res) =>
+      res.json().then((res) => {
+        // console.log(res);
+        setCategories(res);
       })
     );
 
@@ -66,48 +67,103 @@ export default function CategoriesPage() {
     });
   }
 
-  function handleClick(e) {
-    // console.log(e.target.innerHTML);
-    setCategoryName(e.target.innerHTML);
+  function handleDelete(indexToDelete) {
+    const categoryToDelete = categories.filter(
+      (item, index) => index === indexToDelete
+    );
+
+    const creationPromise = new Promise(async (resolve, reject) => {
+      const response = await fetch('/api/categories', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(categoryToDelete[0]),
+      });
+      if (response.ok) {
+        resolve();
+        fetchCategories();
+      } else {
+        reject();
+      }
+    });
+
+    toast.promise(creationPromise, {
+      loading: 'Deleting ...',
+      success: 'Category Deleted',
+      error: 'Sorry Something Went Wrong',
+    });
   }
+
   return (
-    <section className="mt-8 max-w-md mx-auto">
+    <section className="mt-8 max-w-lg mx-auto">
       <UserTabs isAdmin={profileData} />
       <form className="mt-8" onSubmit={handleCategorySubmit}>
         <div className="flex items-end gap-2">
           <div className="grow">
-            <label htmlFor="input">
+            <label>
               {editedCategory ? 'Update Category:' : 'New Category Name:'}
               {editedCategory && <>{editedCategory.name}</>}
             </label>
             <input
               type="text"
+              required
               onChange={(e) => setCategoryName(e.target.value)}
               value={categoryName}
             />
           </div>
-          <div className="pb-1">
+          <div className="pb-1 flex gap-2">
             <button type="submit">
               {editedCategory ? 'Update' : 'Create'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditedCategory(null);
+                setCategoryName('');
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
       </form>
 
-      <div>
-        <h2 className="mt-8 text-sm text-gray-500">Edit Category:</h2>
+      <div className="">
+        <h2 className="mt-8 text-sm text-gray-500">Existing Categories:</h2>
         {categories?.length > 0 &&
-          categories?.map((c) =>
-            c.name !== '' ? (
-              <button
-                className="bg-gray-200 rounded-xl p-2 px-4 flex gap-1 cursor-pointer mb-1"
-                onClick={(e) => {
-                  setEditedCategory(c);
-                  setCategoryName(c.name);
-                }}
+          categories?.map((category, index) =>
+            category.name !== '' ? (
+              <div
+                className="bg-gray-200 rounded-xl p-2 px-4 flex gap-2 cursor-pointer mb-4 items-center border-t-4 border-primary hover:shadow-sm"
+                key={index}
               >
-                <span>{c.name}</span>
-              </button>
+                <h1 className="grow text-2xl font-semibold hover:underline hover:text-3xl">
+                  {category.name}
+                </h1>
+                <div>
+                  <button
+                    className="hover:bg-primary hover:text-white bg-white hover:border-[3px] hover:border-white"
+                    onClick={(e) => {
+                      setEditedCategory(category);
+                      setCategoryName(category.name);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <ConfirmDelete
+                    onDelete={handleDelete}
+                    prop={index}
+                    className="bg-red-600 text-white"
+                  >
+                    Delete Category
+                  </ConfirmDelete>
+                  {/* <button
+                    className="hover:bg-primary hover:text-white bg-white hover:border-[3px] hover:border-white"
+                    onClick={() => handleDelete(index)}
+                  >
+                    Delete
+                  </button> */}
+                </div>
+              </div>
             ) : (
               ''
             )
