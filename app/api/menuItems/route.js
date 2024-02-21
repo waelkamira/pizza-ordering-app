@@ -14,6 +14,13 @@ export async function PUT(req) {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
   console.log('connected to mongodb');
   const { _id, ...data } = await req.json();
+  console.log(
+    'this is image from menuItems route:',
+    data.image,
+    '_id',
+    _id,
+    data
+  );
 
   const item = await MenuItem.findByIdAndUpdate(_id, data);
   console.log('item created successfully');

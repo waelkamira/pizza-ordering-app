@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const fetchData = async () =>
     fetch('/api/profile').then((res) =>
       res.json().then((res) => {
-        // console.log('this res from useEffect:', res);
+        console.log('this res from useEffect:', res);
         setIsAdmin(res?.admin);
         setFetchedProfile(true);
         setFormStates(res);
@@ -42,26 +42,37 @@ export default function ProfilePage() {
   //! this function for changing user info
   function handleProfileInfoUpdate(e) {
     e.preventDefault();
+    const promise = new Promise(async (resolve, reject) => {
+      const res = async () => {
+        await fetch('/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formStates.name,
+            phoneNumber: formStates.phoneNumber,
+            streetAddress: formStates.streetAddress,
+            postalCod: formStates.postalCod,
+            city: formStates.city,
+            country: formStates.country,
+            email: formStates.email,
+            admin: formStates.admin,
+          }),
+        });
+      };
 
-    const res = async () => {
-      toast('Saving ...', { duration: 300 });
+      if (res) {
+        resolve();
+      } else {
+        reject();
+      }
+      res();
+    });
 
-      await fetch('/api/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formStates.name,
-          phoneNumber: formStates.phoneNumber,
-          streetAddress: formStates.streetAddress,
-          postalCod: formStates.postalCod,
-          city: formStates.city,
-          country: formStates.country,
-          email: formStates.email,
-        }),
-      });
-      toast.success('Successfully Saved!', { duration: 5000 });
-    };
-    res();
+    toast.promise(promise, {
+      loading: 'Updating ...',
+      success: 'Uploaded',
+      error: 'Sorry Something Went Wrong',
+    });
   }
 
   if (status === 'loading' || !fetchedProfile) {
@@ -78,9 +89,9 @@ export default function ProfilePage() {
 
       <div className="max-w-xl border rounded-lg p-4 mt-8">
         <UserForm
+          routeProp={"profile"}
           props={formStates}
           setProps={setFormStates}
-          routeName={'profile'}
           handleProfileInfoUpdate={handleProfileInfoUpdate}
         />
       </div>

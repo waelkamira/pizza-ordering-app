@@ -34,7 +34,7 @@ export default function EditUserPage() {
         const findUser = res.find((u) => u._id === id);
         let findUserInfo = res.filter((i) => i.email == findUser.email);
         const user = { ...findUser, ...findUserInfo[1] };
-        console.log('this is user"', user);
+        // console.log('this is user"', user);
         setFormStates(user);
       })
     );
@@ -42,27 +42,37 @@ export default function EditUserPage() {
 
   function handleProfileInfoUpdate(e) {
     e.preventDefault();
+    const promise = new Promise(async (resolve, reject) => {
+      const res = async () => {
+        await fetch('/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formStates?.name,
+            phoneNumber: formStates?.phoneNumber,
+            streetAddress: formStates?.streetAddress,
+            postalCod: formStates?.postalCod,
+            city: formStates?.city,
+            country: formStates?.country,
+            email: formStates?.email,
+            image: formStates?.image,
+            admin: formStates.admin,
+          }),
+        });
+      };
 
-    const res = async () => {
-      toast('Saving ...', { duration: 300 });
-
-      await fetch('/api/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formStates?.name,
-          phoneNumber: formStates?.phoneNumber,
-          streetAddress: formStates?.streetAddress,
-          postalCod: formStates?.postalCod,
-          city: formStates?.city,
-          country: formStates?.country,
-          email: formStates?.email,
-          image: formStates?.image,
-        }),
-      });
-      toast.success('Successfully Saved!', { duration: 5000 });
-    };
-    res();
+      if (res) {
+        resolve();
+      } else {
+        reject();
+      }
+      res();
+    });
+    toast.promise(promise, {
+      loading: 'Saving ...',
+      success: 'Successfully Saved!',
+      error: 'Sorry Something Went Wrong',
+    });
   }
   if (loading) {
     return 'Loading ...';
@@ -71,14 +81,14 @@ export default function EditUserPage() {
   if (!data?.admin) {
     return 'you Are Not An Admin';
   }
-  console.log('props from users', formStates.image);
+
   return (
     <section className="max-w-xl mx-auto mt-8">
       <UserTabs isAdmin={data?.admin} />
       <UserForm
+        routeProp={'profile'}
         props={formStates}
         setProps={setFormStates}
-        routeName={'profile'}
         handleProfileInfoUpdate={handleProfileInfoUpdate}
       />
     </section>

@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import UseProfile from '../UseProfile';
 import EditableImage from './EditableImage';
-import toast from 'react-hot-toast';
 export default function UserForm({
-  routeName,
   handleProfileInfoUpdate,
   props,
   setProps,
+  routeProp,
 }) {
+  const { data } = UseProfile();
+  const [isChecked, setIsChecked] = useState(false);
+
   return (
     <div className="flex gap-4 items-start justify-center p-4 rounded-lg">
-      <EditableImage routeName={routeName} props={props} setProps={setProps} />
+      <EditableImage props={props} routeProp={routeProp} />
       <form
         className="grow flex flex-col justify-center items-center"
         onSubmit={handleProfileInfoUpdate}
@@ -30,6 +33,27 @@ export default function UserForm({
           placeholder="Phone Number"
           onChange={(e) => setProps({ ...props, phoneNumber: e.target.value })}
         />
+
+        {data.admin && (
+          <div className="inline-flex gap-4  border w-full p-3 rounded-xl mb-2 items-center">
+            <label htmlFor="admin" className="text-start w-full text-md">
+              Admin:
+            </label>
+            <input
+              className="hover:accent-primary size-6 bg-gray-600"
+              id="admin"
+              type="checkbox"
+              checked={props.admin}
+              onChange={(e) => {
+                setProps({ ...props, admin: e.target.checked });
+                setIsChecked(e.target.checked);
+                console.log(isChecked);
+                console.log(e.target.checked);
+              }}
+            />
+          </div>
+        )}
+
         <label className="text-start w-full">Street Address:</label>
         <input
           type="text"

@@ -1,8 +1,7 @@
 'use client';
-import Image from 'next/image';
-import React from 'react';
 import Right from '../icons/Right';
 import { CldImage } from 'next-cloudinary';
+
 export default function Hero() {
   return (
     <section className="hero mt-4">
@@ -28,7 +27,7 @@ export default function Hero() {
       </div>
       <div>
         <CldImage
-          src={'/p7uejvnphawnv6lmeo5h.png'}
+          src={'/dijhl1onxpqcfjce1nmq.png'}
           alt="pizza"
           width={659}
           height={653}

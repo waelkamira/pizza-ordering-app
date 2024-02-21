@@ -12,6 +12,7 @@ import Left from '../../../../components/icons/Left';
 import { useParams, useRouter } from 'next/navigation';
 import AddItemProps from '../../../../components/layout/AddItemProps';
 import ConfirmDelete from '../../../../components/layout/ConfirmDelete';
+import EditableImage from '../../../../components/layout/EditableImage';
 
 export default function EditMenuItemsPage() {
   const [category, setCategory] = useState('');
@@ -30,6 +31,7 @@ export default function EditMenuItemsPage() {
     basePrice: '',
     _id: '',
     category: '',
+    email: '',
   });
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function EditMenuItemsPage() {
       res.json().then((res) => {
         // console.log('this is res: ', res);
         const result = res.filter((item) => item._id === id);
-        // console.log('this is result: ', result);
+        console.log('this is result: ', result);
         setItemDataState({
           image: result[0]?.image,
           itemName: result[0]?.itemName,
@@ -62,10 +64,11 @@ export default function EditMenuItemsPage() {
           integrediants: result[0]?.integrediants,
           _id: result[0]?._id,
           category: result[0]?.category,
+          email: result[0]?.email,
         });
       })
     );
-
+  console.log(itemDataStates);
   if (loading) {
     return 'Loading User Info ..';
   }
@@ -92,7 +95,8 @@ export default function EditMenuItemsPage() {
               sizes: sizes,
               integrediants: integrediants,
               category: itemDataStates.category,
-              _id: id,
+              email: itemDataStates.email,
+              _id: itemDataStates._id,
             }),
             headers: { 'Content-Type': 'application/json' },
           });
@@ -119,22 +123,6 @@ export default function EditMenuItemsPage() {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  //! this function for upload image to cloudinary server
-  async function handleImage(e) {
-    const files = e.target.files;
-    const formData = new FormData();
-    formData.set('file', files[0]);
-    formData.set('upload_preset', 'dq8dx63w');
-
-    const response = await axios
-      .post('https://api.cloudinary.com/v1_1/dh2xlutfu/upload', formData)
-      .then((res) => {
-        const imagePublic_id = res?.data?.public_id;
-        console.log('this is imagePublic_id: ', imagePublic_id);
-        setItemDataState({ ...itemDataStates, image: imagePublic_id });
-      });
   }
 
   function DeleteMenuItem(menuItem) {
@@ -173,36 +161,8 @@ export default function EditMenuItemsPage() {
           </Link>
         </div>
         <div className="flex items-start gap-4 mt-8">
-          <div className="flex flex-col py-3 px-3  bg-gray-500 rounded-lg ">
-            <div className="flex justify-center items-center mb-2 border border-orange-300 rounded-lg  p-2">
-              {itemDataStates.image ? (
-                <CldImage
-                  src={`/${itemDataStates?.image}`}
-                  alt={'avatar'}
-                  width={100}
-                  height={100}
-                  sizes="100vw"
-                  priority
-                  className="h-[80px] w-[80px] object-cover object-bottom  rounded-lg"
-                ></CldImage>
-              ) : (
-                <h1>No Image</h1>
-              )}
-            </div>
+          <EditableImage props={itemDataStates} routeProp={'menuItems'} />
 
-            <label className="mx-6">
-              <input
-                className="hidden"
-                type="file"
-                onChange={(e) => handleImage(e)}
-              />
-              <div className="flex flex-col justify-center items-center">
-                <span className="text-lg bg-primary cursor-pointer border border-gray-400 text-white rounded-lg py-1 px-4">
-                  Edit
-                </span>
-              </div>
-            </label>
-          </div>
           <div className="grow">
             <label>Item Name</label>
             <input
@@ -262,7 +222,9 @@ export default function EditMenuItemsPage() {
                 <div>
                   <label className="text-nowrap">Current Category</label>
                   <button disabled type="button">
-                    {itemDataStates.category}
+                    {itemDataStates.category || (
+                      <h1 className="text-sm text-nowrap">No Category</h1>
+                    )}
                   </button>
                 </div>
               </div>
@@ -289,7 +251,6 @@ export default function EditMenuItemsPage() {
             />
 
             <div className="mt-4 grow">
-              {' '}
               <AddItemProps
                 name={'ingredients:'}
                 label={'Add Extra Ingredients'}

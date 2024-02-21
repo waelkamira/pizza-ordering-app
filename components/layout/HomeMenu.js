@@ -1,11 +1,24 @@
 'use client';
-import Image from 'next/image';
-import React from 'react';
+
 import MenuItem from '../menu/MenuItem';
 import SectionHeaders from './SectionHeaders';
 import { CldImage } from 'next-cloudinary';
-
+import React, { useEffect, useState } from 'react';
 export default function HomeMenu() {
+  const [bestSellers, setBestSellers] = useState([]);
+
+  useEffect(() => {
+    fetchAllMenuItems();
+  }, []);
+
+  const fetchAllMenuItems = async () => {
+    fetch('/api/menuItems').then((res) =>
+      res.json().then((res) => {
+        // console.log(res);
+        setBestSellers(res.slice(-3));
+      })
+    );
+  };
   return (
     <section>
       <div className="flex justify-between relative h-full">
@@ -29,15 +42,21 @@ export default function HomeMenu() {
         </div>
       </div>
       <div className="text-center">
-        <SectionHeaders subHeader={'Check Out'} mainHeader={'Menu'} />
+        <SectionHeaders
+          subHeader={'Check Out'}
+          mainHeader={'Our Best Sellers'}
+        />
       </div>
       <div className="grid grid-cols-3 gap-4 mt-4 bg-orange-100/40 p-4">
-        <MenuItem />
-        <MenuItem />
-        <MenuItem />
-        <MenuItem />
-        <MenuItem />
-        <MenuItem />
+        {bestSellers?.map((item, index) => (
+          <MenuItem
+            key={index}
+            image={item.image}
+            itemName={item.itemName}
+            description={item.description}
+            basePrice={item.basePrice}
+          />
+        ))}
       </div>
     </section>
   );

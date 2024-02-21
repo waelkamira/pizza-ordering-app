@@ -4,26 +4,25 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 
-export default function EditableImage({ routeName, props, setProps }) {
+export default function EditableImage({ props, routeProp }) {
   const session = useSession();
-  const { status, data } = session;
+  // const { status, data } = session;
   const [imageData, setImageData] = useState(' ');
   const [isAdmin, setIsAdmin] = useState(false);
   const [fetchedProfile, setFetchedProfile] = useState(false);
-
+  console.log(props.email);
   useEffect(() => {
     // console.log('useEffect');
     fetchData();
-  }, [imageData]);
+  }, []);
 
   //! this function to fetch data from mongodb
   const fetchData = async () =>
-    fetch(`/api/profile`).then((res) =>
+    fetch(`/api/${routeProp}`).then((res) =>
       res.json().then((res) => {
-        console.log('this res from useEffect:', res);
+        // console.log('this res from useEffect:', res);
         setIsAdmin(res?.admin);
         setFetchedProfile(true);
-        // setImageData(res?.image);
       })
     );
 
@@ -43,26 +42,28 @@ export default function EditableImage({ routeName, props, setProps }) {
               //! this function for sending changed image to mongodb
               async function sendChangedImage() {
                 const imagePublic_id = res?.data?.public_id;
-                // console.log('this is imagePublic_id: ', imagePublic_id);
-                await fetch(`/api/profile`, {
+                console.log('this is imagePublic_id: ', imagePublic_id);
+                await fetch(`/api/${routeProp}`, {
                   method: 'PUT',
                   body: JSON.stringify({
                     image: imagePublic_id,
                     email: props.email,
+                    _id: props._id,
                   }),
                   headers: { 'Content-Type': 'application/json' },
                 });
 
                 setImageData(imagePublic_id);
+                if (imagePublic_id) {
+                  resolve();
+                  location.reload();
+                } else {
+                  reject();
+                }
               }
 
               sendChangedImage();
             });
-          if (response) {
-            resolve();
-          } else {
-            reject();
-          }
         });
 
         toast.promise(promise, {
@@ -70,7 +71,6 @@ export default function EditableImage({ routeName, props, setProps }) {
           success: 'Image Uploaded',
           error: 'Sorry Something Went Wrong',
         });
-        location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -78,7 +78,7 @@ export default function EditableImage({ routeName, props, setProps }) {
     imagePost();
   }
 
-  console.log('props from EditableImage', imageData);
+  // console.log('props from EditableImage', imageData);
   return (
     <div className="flex flex-col py-3 px-3  bg-gray-500 rounded-lg ">
       <div className="flex justify-center items-center mb-2 border border-orange-300 rounded-lg  p-2">
@@ -96,9 +96,9 @@ export default function EditableImage({ routeName, props, setProps }) {
       <label className="mx-6">
         <input className="hidden" type="file" onChange={handleFileChange} />
         <div className="flex flex-col justify-center items-center">
-          <div className="text-2xl text-white whitespace-nowrap">
+          <h1 className="text-xl text-white whitespace-nowrap w-20 truncate text-center">
             {props.name}
-          </div>
+          </h1>
           <span className="text-lg bg-primary cursor-pointer border border-gray-400 text-white rounded-lg py-1 px-4">
             Edit
           </span>
