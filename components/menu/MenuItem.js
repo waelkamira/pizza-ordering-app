@@ -3,7 +3,7 @@ import { CldImage } from 'next-cloudinary';
 import { CartContext } from '../ContextProvider';
 import toast from 'react-hot-toast';
 import MenuItemTile from './MenuItemTail';
-
+import Fly from 'react-flying-objects';
 export default function MenuItem(menuItem) {
   const {
     image,
@@ -48,22 +48,26 @@ export default function MenuItem(menuItem) {
     if (addSize[0]?.name === 'small') {
       let size = {
         name: addSize[0].name,
-        price: basePrice,
+        price: 0,
+        basePrice: basePrice,
         id: id,
       };
       const num = selectedSize?.price || 0;
+      const num2 = selectedSize?.basePrice || 0;
       console.log('num', num);
-      setAllPrice(+allPrice + +size.price - num);
+      setAllPrice(basePrice + allPrice + size.price - num - num2);
       setSelectedSize(size);
     } else {
       let size = {
         name: addSize[0].name,
-        price: addSize[0].price + basePrice,
+        price: addSize[0].price,
+        basePrice: basePrice,
         id: id,
       };
       const num = selectedSize?.price || 0;
+      const num2 = selectedSize?.basePrice || 0;
       console.log('num', num);
-      setAllPrice(+allPrice + +size.price - num);
+      setAllPrice(basePrice + allPrice + size.price - num - num2);
       setSelectedSize(size);
     }
   }
@@ -122,6 +126,7 @@ export default function MenuItem(menuItem) {
                   sizes="100vw"
                   className="max-h-auto block mx-auto max-h-24"
                 />
+                {/* <Fly objectToFly={image} /> */}
               </div>
               <h1 className="font-semibold my-3 text-xl ">{itemName}</h1>
             </div>
@@ -195,7 +200,6 @@ export default function MenuItem(menuItem) {
                     setSelectedSize({});
                     setSelectedIngredient([]);
                     setAllPrice(0);
-                    // allPrice = 0;
                   }}
                 >
                   Cancel

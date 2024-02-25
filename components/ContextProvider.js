@@ -1,12 +1,18 @@
 'use client';
 import { SessionProvider } from 'next-auth/react';
 import { createContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 export const CartContext = createContext({});
 
 export default function ContextProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
   const ls = typeof window !== 'undefined' ? window.localStorage : null;
 
+  let total = 0;
+
+  for (const price of cartProducts) {
+    total += finalPrice(price);
+  }
   useEffect(() => {
     if (ls && ls.getItem('cartProducts')) {
       //? here we restore cartProducts after reload the page
@@ -33,6 +39,8 @@ export default function ContextProvider({ children }) {
       (v, index) => index !== indexToRemove
     );
     saveCartProductsToLocalStorage(newCartProducts);
+    toast.success('Product successfully Removed');
+
     return newCartProducts;
   }
 
@@ -48,21 +56,17 @@ export default function ContextProvider({ children }) {
   }
 
   //? this function to calculate final price with size and extras
-  function finalPrice(product) {
-    let price = 0;
+  function finalPrice(cartProduct) {
+    let price = cartProduct?.basePrice;
 
-    if (product?.extras?.length === 0 && product?.size == null) {
-      price = product?.basePrice;
-    } else if (product?.size?.price !== 0) {
-      price = product?.size?.price;
-    } else if (product?.extras?.length > 0 && product?.size?.price !== 0) {
-      let prices = [];
-      product?.extras.map((item) => prices.push(item.price));
-      let extrasPrice = prices.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue;
-      }, 0);
+    if (cartProduct?.size) {
+      price += cartProduct?.size?.price;
+    }
 
-      price = product?.size?.price + extrasPrice;
+    if (cartProduct?.extras?.length > 0) {
+      for (const extra of cartProduct.extras) {
+        price += extra.price;
+      }
     }
 
     return price;
@@ -77,6 +81,7 @@ export default function ContextProvider({ children }) {
           clearCart,
           removeCartProduct,
           finalPrice,
+          total,
         }}
       >
         {children}
