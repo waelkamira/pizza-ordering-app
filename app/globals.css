@@ -1,7 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #6d6a6a;
+  border-radius: 5px;
+  width: 50vb;
+}
+::-webkit-scrollbar-thumb {
+  background: #ff5e0e;
+  border-radius: 5px;
+  width: 50vb;
+}
 section.hero {
   @apply flex flex-col-reverse md:flex-row;
 }

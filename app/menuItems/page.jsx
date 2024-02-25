@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import UserTabs from '../../components/layout/UserTabs';
 import Link from 'next/link';
 import Right from '../../components/icons/Right';
-import Image from 'next/image';
 import { CldImage } from 'next-cloudinary';
 export default function MenuItemsPage() {
   const { data, loading } = UseProfile();

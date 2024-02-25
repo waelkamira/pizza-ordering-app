@@ -15,7 +15,7 @@ import AddItemProps from '../../../components/layout/AddItemProps';
 export default function NewMenuItemsPage() {
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [integrediants, setIntegrediants] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [sizes, setSizes] = useState([]);
   const router = useRouter();
   const session = useSession();
@@ -75,7 +75,7 @@ export default function NewMenuItemsPage() {
               description: itemDataStates?.description,
               basePrice: itemDataStates?.basePrice,
               sizes: sizes,
-              integrediants: integrediants,
+              ingredients: ingredients,
               category: category,
             }),
             headers: { 'Content-Type': 'application/json' },
@@ -267,8 +267,8 @@ export default function NewMenuItemsPage() {
               <AddItemProps
                 name={'ingredients:'}
                 label={'Add Extra Ingredients'}
-                props={integrediants}
-                setProps={setIntegrediants}
+                props={ingredients}
+                setProps={setIngredients}
               />
             </div>
 

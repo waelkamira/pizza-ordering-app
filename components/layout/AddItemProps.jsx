@@ -6,7 +6,7 @@ import { MdOutlineDoubleArrow } from 'react-icons/md';
 export default function AddItemProps({ name, label, props, setProps }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleAddItemPropsForm(e) {
+  function handleAddItemPropsForm() {
     setProps([...props, { name: '', price: '' }]);
   }
 

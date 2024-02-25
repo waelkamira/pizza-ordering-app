@@ -51,10 +51,12 @@ export default function HomeMenu() {
         {bestSellers?.map((item, index) => (
           <MenuItem
             key={index}
-            image={item.image}
-            itemName={item.itemName}
-            description={item.description}
-            basePrice={item.basePrice}
+            image={item?.image}
+            itemName={item?.itemName}
+            description={item?.description}
+            basePrice={item?.basePrice}
+            sizes={item?.sizes}
+            ingredients={item?.ingredients}
           />
         ))}
       </div>

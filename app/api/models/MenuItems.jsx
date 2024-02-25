@@ -23,7 +23,7 @@ const MenuItemSchema = new Schema(
       required: true,
     },
     sizes: { type: [ExtraPriceSchema] },
-    integrediants: { type: [ExtraPriceSchema] },
+    ingredients: { type: [ExtraPriceSchema] },
     category: { type: String },
   },
   { timestamps: true }

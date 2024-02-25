@@ -6,13 +6,11 @@ import { useSession } from 'next-auth/react';
 
 export default function EditableImage({ props, routeProp }) {
   const session = useSession();
-  // const { status, data } = session;
   const [imageData, setImageData] = useState(' ');
   const [isAdmin, setIsAdmin] = useState(false);
   const [fetchedProfile, setFetchedProfile] = useState(false);
   console.log(props.email);
   useEffect(() => {
-    // console.log('useEffect');
     fetchData();
   }, []);
 
@@ -20,7 +18,6 @@ export default function EditableImage({ props, routeProp }) {
   const fetchData = async () =>
     fetch(`/api/${routeProp}`).then((res) =>
       res.json().then((res) => {
-        // console.log('this res from useEffect:', res);
         setIsAdmin(res?.admin);
         setFetchedProfile(true);
       })
@@ -78,7 +75,6 @@ export default function EditableImage({ props, routeProp }) {
     imagePost();
   }
 
-  // console.log('props from EditableImage', imageData);
   return (
     <div className="flex flex-col py-3 px-3  bg-gray-500 rounded-lg ">
       <div className="flex justify-center items-center mb-2 border border-orange-300 rounded-lg  p-2">
@@ -92,7 +88,6 @@ export default function EditableImage({ props, routeProp }) {
           className="h-[80px] w-[80px] object-cover object-bottom  rounded-lg"
         ></CldImage>
       </div>
-
       <label className="mx-6">
         <input className="hidden" type="file" onChange={handleFileChange} />
         <div className="flex flex-col justify-center items-center">

@@ -1,13 +1,14 @@
 'use client';
 import { signOut, useSession } from 'next-auth/react';
-import { redirect } from 'next/dist/server/api-utils';
 import Link from 'next/link';
 import React from 'react';
+import { useContext } from 'react';
+import { CartContext } from '../ContextProvider';
+import { TiShoppingCart } from 'react-icons/ti';
 
 export default function Header() {
+  const { cartProducts } = useContext(CartContext);
   const session = useSession();
-  // console.log('session from Header: ', session);
-
   const status = session?.status;
   const userData = session?.data?.user;
   let userName = userData?.name;
@@ -44,6 +45,16 @@ export default function Header() {
               }}
             >
               Logout
+            </Link>
+            <Link href={'/cart'}>
+              <div className="relative">
+                <h1 className="absolute -top-1 -right-2 bg-primary rounded-full py-0.5 px-2 text-sm text-white">
+                  {cartProducts?.length}
+                </h1>
+                <h1>
+                  <TiShoppingCart className="text-4xl text-secondary" />
+                </h1>
+              </div>
             </Link>
           </>
         )}

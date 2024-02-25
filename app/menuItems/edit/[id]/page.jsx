@@ -18,7 +18,7 @@ export default function EditMenuItemsPage() {
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
-  const [integrediants, setIntegrediants] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const router = useRouter();
   const { id } = useParams();
   const session = useSession();
@@ -48,27 +48,21 @@ export default function EditMenuItemsPage() {
       })
     );
 
-  //? this function to fetch data from mongodb
+  //? this function to fetch menu item data from mongodb
   const fetchData = async () =>
     await fetch('/api/menuItems').then((res) =>
       res.json().then((res) => {
         // console.log('this is res: ', res);
         const result = res.filter((item) => item._id === id);
-        console.log('this is result: ', result);
-        setItemDataState({
-          image: result[0]?.image,
-          itemName: result[0]?.itemName,
-          description: result[0]?.description,
-          basePrice: result[0]?.basePrice,
-          sizes: result[0]?.sizes,
-          integrediants: result[0]?.integrediants,
-          _id: result[0]?._id,
-          category: result[0]?.category,
-          email: result[0]?.email,
-        });
+        console.log('this is result: ', result[0]);
+        console.log('this is sizes: ', result[0].sizes[0]);
+        console.log('this is ingredients: ', result[0].ingredients[0]);
+        setItemDataState(result[0]);
+        setSizes(result[0].sizes);
+        setIngredients(result[0].ingredients);
       })
     );
-  console.log(itemDataStates);
+
   if (loading) {
     return 'Loading User Info ..';
   }
@@ -93,7 +87,7 @@ export default function EditMenuItemsPage() {
               description: itemDataStates.description,
               basePrice: itemDataStates.basePrice,
               sizes: sizes,
-              integrediants: integrediants,
+              ingredients: ingredients,
               category: itemDataStates.category,
               email: itemDataStates.email,
               _id: itemDataStates._id,
@@ -246,7 +240,7 @@ export default function EditMenuItemsPage() {
             <AddItemProps
               name={'Sizes:'}
               label={'Add Item Size:'}
-              props={itemDataStates.sizes}
+              props={sizes}
               setProps={setSizes}
             />
 
@@ -254,8 +248,8 @@ export default function EditMenuItemsPage() {
               <AddItemProps
                 name={'ingredients:'}
                 label={'Add Extra Ingredients'}
-                props={itemDataStates.integrediants}
-                setProps={setIntegrediants}
+                props={ingredients}
+                setProps={setIngredients}
               />
             </div>
             <button type="submit" onClick={() => router.push('/menuItems')}>

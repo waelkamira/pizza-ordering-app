@@ -16,7 +16,7 @@ export default function MenuPage() {
   const fetchAllMenuItems = async () => {
     fetch('/api/menuItems').then((res) =>
       res.json().then((res) => {
-        console.log(res);
+        // console.log(res);
         setMenuItems(res);
       })
     );
@@ -26,7 +26,7 @@ export default function MenuPage() {
   const fetchAllCategories = async () => {
     fetch('/api/categories').then((res) =>
       res.json().then((res) => {
-        console.log(res);
+        // console.log(res);
         setCategories(res);
       })
     );
@@ -36,7 +36,7 @@ export default function MenuPage() {
     <section className=" mt-8">
       {categories?.map((c) => (
         <div>
-          <div className="text-center">
+          <div className="text-center mt-12">
             <SectionHeaders mainHeader={c.name} />
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4 mb-8">
