@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { User } from './../models/User';
 import { UserInfo } from './../models/UserInfo';
+import { isAdmin } from '../auth/[...nextauth]/route';
 
 export async function GET() {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
@@ -9,12 +10,16 @@ export async function GET() {
   const usersInfo = await UserInfo.find();
   const arr = [...users, ...usersInfo];
   console.log('arr: ', arr);
-  return Response.json(arr);
+
+  if (await isAdmin()) {
+    return Response.json(arr);
+  } else {
+    return Response.json([]);
+  }
 }
 
 export async function PUT(req) {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
   const { image } = await req.json();
-  // const user = await User.find({image},)
   return Response.json('');
 }

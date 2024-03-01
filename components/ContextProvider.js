@@ -10,9 +10,11 @@ export default function ContextProvider({ children }) {
 
   let total = 0;
 
-  for (const price of cartProducts) {
-    total += finalPrice(price);
+  for (const cartProduct of cartProducts) {
+    // console.log('ContextProvider cartProducts', cartProducts);
+    total += finalPrice(cartProduct);
   }
+
   useEffect(() => {
     if (ls && ls.getItem('cartProducts')) {
       //? here we restore cartProducts after reload the page
@@ -27,7 +29,7 @@ export default function ContextProvider({ children }) {
     }
   }
 
-  //? this function to clear to clear cart
+  //? this function to clear the cart
   function clearCart() {
     setCartProducts([]);
     saveCartProductsToLocalStorage([]);
@@ -82,6 +84,7 @@ export default function ContextProvider({ children }) {
           removeCartProduct,
           finalPrice,
           total,
+          saveCartProductsToLocalStorage,
         }}
       >
         {children}

@@ -1,9 +1,10 @@
-import NextAuth from 'next-auth';
+import NextAuth, { getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { User } from '../../models/User';
+import { UserInfo } from '../../models/UserInfo';
 
 // import { MongoDBAdapter } from '@auth/mongodb-adapter';
 // import clientPromise from '../../../../lip/mongodb';
@@ -28,8 +29,7 @@ export const authOptions = {
           user && (await bcrypt.compare(password, user.password));
 
         if (passwordOk) {
-          // console.log('this is use from auth route page', user);
-
+          console.log('this is user from auth route page', user);
           return user;
         } else {
           return null;
@@ -38,6 +38,21 @@ export const authOptions = {
     }),
   ],
 };
+
+export async function isAdmin() {
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+  if (!email) {
+    return false;
+  }
+
+  const userInfo = await UserInfo.findOne({ email });
+  if (!userInfo?.admin) {
+    return false;
+  }
+
+  return userInfo?.admin;
+}
 
 const handler = NextAuth(authOptions);
 

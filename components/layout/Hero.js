@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import Right from '../icons/Right';
 import { CldImage } from 'next-cloudinary';
 
@@ -15,11 +16,14 @@ export default function Hero() {
           Pizza is the missing piece that makes every day complete a simple yet
           delicious joy in life
         </p>
-        <div className="flex gap-4 my-2 text-sm">
-          <button className="flex items-center justify-center bg-primary gap-2 text-white px-4 py-2 rounded-full">
+        <div className="flex gap-4 my-2 text-sm items-center">
+          <Link
+            href={'/menu'}
+            className="flex items-center justify-center bg-primary gap-2 text-white px-4 h-10 rounded-full text-center text-nowrap"
+          >
             ORDER NOW
-            <Right />
-          </button>
+            <Right style={{ color: 'white' }} />
+          </Link>
           <button className="flex items-center border-none gap-2 py-2 px-4 text-gray-600 font-semibold">
             Learn More <Right />
           </button>

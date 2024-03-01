@@ -5,10 +5,12 @@ import React from 'react';
 import { useContext } from 'react';
 import { CartContext } from '../ContextProvider';
 import { TiShoppingCart } from 'react-icons/ti';
-
+import { useRouter } from 'next/navigation';
 export default function Header() {
+  const router = useRouter();
   const { cartProducts } = useContext(CartContext);
   const session = useSession();
+  // console.log('session', session);
   const status = session?.status;
   const userData = session?.data?.user;
   let userName = userData?.name;
@@ -38,19 +40,23 @@ export default function Header() {
 
             <Link
               href={'/login'}
-              className="bg-primary text-white rounded-full px-8 py-2"
               onClick={() => {
                 localStorage.clear();
-                signOut();
+                setTimeout(() => {
+                  signOut();
+                }, 1000);
               }}
+              className="bg-primary text-white rounded-full px-8 py-2"
             >
               Logout
             </Link>
             <Link href={'/cart'}>
               <div className="relative">
-                <h1 className="absolute -top-1 -right-2 bg-primary rounded-full py-0.5 px-2 text-sm text-white">
-                  {cartProducts?.length}
-                </h1>
+                {cartProducts?.length > 0 && (
+                  <h1 className="absolute -top-1 -right-2 bg-primary rounded-full py-0.5 px-2 text-sm text-white">
+                    {cartProducts?.length}
+                  </h1>
+                )}
                 <h1>
                   <TiShoppingCart className="text-4xl text-secondary" />
                 </h1>

@@ -16,7 +16,7 @@ export default function ProfilePage() {
     name: '',
     phoneNumber: '',
     streetAddress: '',
-    postalCod: '',
+    postalCode: '',
     city: '',
     country: '',
   });
@@ -51,7 +51,7 @@ export default function ProfilePage() {
             name: formStates.name,
             phoneNumber: formStates.phoneNumber,
             streetAddress: formStates.streetAddress,
-            postalCod: formStates.postalCod,
+            postalCode: formStates.postalCode,
             city: formStates.city,
             country: formStates.country,
             email: formStates.email,
@@ -89,7 +89,7 @@ export default function ProfilePage() {
 
       <div className="max-w-xl border rounded-lg p-4 mt-8">
         <UserForm
-          routeProp={"profile"}
+          routeProp={'profile'}
           props={formStates}
           setProps={setFormStates}
           handleProfileInfoUpdate={handleProfileInfoUpdate}

@@ -8,16 +8,13 @@ import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 export default function EditUserPage() {
   const { id } = useParams();
-  // console.log(path);
   const { loading, data } = UseProfile();
-  const session = useSession();
-
   const [formStates, setFormStates] = useState({
     image: '',
     name: '',
     phoneNumber: '',
     streetAddress: '',
-    postalCod: '',
+    postalCode: '',
     city: '',
     country: '',
   });
@@ -26,15 +23,12 @@ export default function EditUserPage() {
     fetchAllUsers();
   }, []);
 
-  // console.log(formStates);
   const fetchAllUsers = async () => {
     await fetch('/api/users').then((res) =>
       res.json().then((res) => {
-        // console.log('this is res"', res);
         const findUser = res.find((u) => u._id === id);
         let findUserInfo = res.filter((i) => i.email == findUser.email);
         const user = { ...findUser, ...findUserInfo[1] };
-        // console.log('this is user"', user);
         setFormStates(user);
       })
     );
@@ -51,7 +45,7 @@ export default function EditUserPage() {
             name: formStates?.name,
             phoneNumber: formStates?.phoneNumber,
             streetAddress: formStates?.streetAddress,
-            postalCod: formStates?.postalCod,
+            postalCode: formStates?.postalCode,
             city: formStates?.city,
             country: formStates?.country,
             email: formStates?.email,

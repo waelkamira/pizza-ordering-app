@@ -1,10 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { CldImage } from 'next-cloudinary';
 import { CartContext } from '../ContextProvider';
 import toast from 'react-hot-toast';
 import MenuItemTile from './MenuItemTail';
-import Fly from 'react-flying-objects';
-export default function MenuItem(menuItem) {
+import { useSession } from 'next-auth/react';
+
+export default function MenuItem({ menuItem, onSetMessage }) {
+  console.log('menuItem', menuItem);
   const {
     image,
     itemName,
@@ -20,26 +22,30 @@ export default function MenuItem(menuItem) {
   const [allPrice, setAllPrice] = useState(0);
   const [selectedIngredient, setSelectedIngredient] = useState([]);
   const [selectedSize, setSelectedSize] = useState([{}]);
-
-  console.log('allPrice above', allPrice);
-  console.log('selectedSize', selectedSize);
-  console.log('selectedIngredient', selectedIngredient);
-
+  const session = useSession();
+  console.log('session', session?.status);
   function handleAddToCartButtonClick() {
-    if (sizes?.length === 0 && ingredients?.length === 0) {
-      addToCart(menuItem);
-      toast.success('Added To Cart');
-    } else {
-      setShowPopup(true);
-    }
+    if (session?.status === 'authenticated') {
+      if (sizes?.length === 0 && ingredients?.length === 0) {
+        addToCart(menuItem);
+        toast.success('Added To Cart');
+      } else {
+        setShowPopup(true);
+      }
 
-    if (showPopup) {
-      addToCart(menuItem, selectedSize, selectedIngredient);
-      setSelectedSize({});
-      setSelectedIngredient([]);
-      setAllPrice(0);
-      setShowPopup(false);
-      toast.success('Added To Cart');
+      if (showPopup) {
+        addToCart(menuItem, selectedSize, selectedIngredient);
+        setSelectedSize({});
+        setSelectedIngredient([]);
+        setAllPrice(0);
+        setShowPopup(false);
+        toast.success('Added To Cart');
+      }
+    } else {
+      onSetMessage(true);
+      setTimeout(() => {
+        onSetMessage(false);
+      }, 2500);
     }
   }
 
@@ -54,7 +60,7 @@ export default function MenuItem(menuItem) {
       };
       const num = selectedSize?.price || 0;
       const num2 = selectedSize?.basePrice || 0;
-      console.log('num', num);
+
       setAllPrice(basePrice + allPrice + size.price - num - num2);
       setSelectedSize(size);
     } else {
@@ -66,7 +72,7 @@ export default function MenuItem(menuItem) {
       };
       const num = selectedSize?.price || 0;
       const num2 = selectedSize?.basePrice || 0;
-      console.log('num', num);
+
       setAllPrice(basePrice + allPrice + size.price - num - num2);
       setSelectedSize(size);
     }
@@ -109,7 +115,6 @@ export default function MenuItem(menuItem) {
             setSelectedSize({});
             setSelectedIngredient([]);
             setAllPrice(0);
-            // allPrice = 0;
           }}
         >
           <div
@@ -126,7 +131,6 @@ export default function MenuItem(menuItem) {
                   sizes="100vw"
                   className="max-h-auto block mx-auto max-h-24"
                 />
-                {/* <Fly objectToFly={image} /> */}
               </div>
               <h1 className="font-semibold my-3 text-xl ">{itemName}</h1>
             </div>
@@ -140,7 +144,6 @@ export default function MenuItem(menuItem) {
                     <label className="flex items-center gap-2 font-semibold text-lg">
                       <input
                         onClick={(e) => {
-                          // setIsChecked(e.target.checked);
                           handleSelectedSizes(size._id, e);
                         }}
                         className="accent-primary"

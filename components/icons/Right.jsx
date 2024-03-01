@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Right({ className = 'w-6 h-6' }) {
+export default function Right({ style = { color: '#FF5E0E' } }) {
   return (
     <div>
       <svg
@@ -9,8 +9,8 @@ export default function Right({ className = 'w-6 h-6' }) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className={className}
-        style={{ color: '#FF5E0E' }}
+        className={'w-6 h-6'}
+        style={style}
       >
         <path
           strokeLinecap="round"

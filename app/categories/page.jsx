@@ -52,6 +52,10 @@ export default function CategoriesPage() {
 
       if (response.ok) {
         resolve();
+
+        await response
+          .json()
+          .then((res) => console.log('this is res from categories:', res));
       } else {
         reject();
       }

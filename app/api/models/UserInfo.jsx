@@ -15,7 +15,7 @@ const UserInfoSchema = new Schema(
       type: String,
       default: '',
     },
-    postalCod: {
+    postalCode: {
       type: String,
       default: '',
     },

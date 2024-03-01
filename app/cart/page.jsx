@@ -1,153 +1,139 @@
 'use client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SectionHeaders from '../../components/layout/SectionHeaders';
 import { CartContext } from '../../components/ContextProvider';
 import { CldImage } from 'next-cloudinary';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { IoIosArrowForward } from 'react-icons/io';
 import UseProfile from '../../components/UseProfile';
+import toast from 'react-hot-toast';
+import OrderInfo from '../../components/layout/OrderInfo';
+import Address from '../../components/layout/Address';
+import Prices from '../../components/layout/Prices';
 
 export default function CartPage() {
   const { data } = UseProfile();
+  const { cartProducts, removeCartProduct, finalPrice, total } =
+    useContext(CartContext);
+  // console.log('cartProducts:', cartProducts);
 
-  console.log(data);
-  const {
-    cartProducts,
-    setCartProducts,
-    clearCart,
-    removeCartProduct,
-    finalPrice,
-    total,
-  } = useContext(CartContext);
-  console.log(cartProducts);
+  //? when payment failed
+  useEffect(() => {
+    if (typeof window?.console !== 'undefined') {
+      if (window?.location?.href.includes('canceled=1')) {
+        toast.error('Payment Failed 😥');
+      }
+    }
+  }, []);
 
+  // console.log(window.location.href);
+
+  async function ProceedToCheckout(e) {
+    e.preventDefault();
+
+    const promise = new Promise(async (resolve, reject) => {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data, cartProducts }),
+      });
+      if (response.ok) {
+        resolve();
+        const url = await response.json();
+        // console.log('url', url);
+        // window.location = await response.json();
+        location.assign(url.toString());
+      } else {
+        reject();
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Preparing Your Order ...',
+      success: 'Redirecting To Payment',
+      error: 'Sorry Something Went Wrong',
+    });
+  }
   return (
     <section className="mt-8 mx-auto">
       <div className=" text-center mb-4">
         <SectionHeaders mainHeader={'Cart'} />
       </div>
-
-      <div className="grid grid-cols-2 gap-8 mt-8">
-        <div className="">
-          <div className="p-4 flex justify-between items-center border border-secondary rounded-lg ">
-            <h1 className="font-semibold text-nowrap">Total:</h1>
-            <IoIosArrowForward />
-            <IoIosArrowForward />
-            <IoIosArrowForward />
-            <IoIosArrowForward />
-            <IoIosArrowForward />
-            <h1 className="float-end mr-4 font-bold p-4 rounded-lg">
-              💲{total}
-            </h1>
-          </div>
-          {cartProducts?.length === 0 && (
-            <h1 className="text-center mt-4 font-bold">
-              No Products In Your Cart
-            </h1>
-          )}
-          {cartProducts?.length > 0 &&
-            cartProducts?.map((product, index) => {
-              return (
-                <div>
-                  <div className="flex items-center gap-4 border border-primary my-2 rounded-lg p-4 h-44">
-                    <CldImage
-                      src={product?.image}
-                      width={100}
-                      height={100}
-                      sizes="100vb"
-                      alt="product image"
-                    />
-                    {product?.size?.length > 0 ||
-                    product?.extras?.length > 0 ? (
-                      <div className="grow">
-                        <h1 className="text-nowrap font-bold mb-2">
-                          {product?.itemName}
-                        </h1>
-                        <div>
-                          <h1>Size: {product?.size?.name}</h1>
-                        </div>
-                        <div>
-                          <hr />
-
-                          <div>
-                            {product?.extras.map((item) => {
-                              return (
-                                <div>
-                                  <h1 className="mt-2">
-                                    Extra {item.name}:
-                                    <span className="ml-2 ">${item.price}</span>
-                                  </h1>
-                                  <hr />
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="grow">
-                        <h1 className="font-bold ">{product?.itemName}</h1>
-                      </div>
-                    )}
-                    <h1 className="text-lg font-semibold">
-                      {' '}
-                      ${finalPrice(product)}
-                    </h1>
-                    <FaRegTrashCan
-                      className="cursor-pointer hover:text-primary "
-                      type="button"
-                      onClick={() => {
-                        removeCartProduct(index);
-                        location.reload();
-                      }}
-                    />
-                  </div>
+      {cartProducts?.length === 0 && (
+        <h1 className="text-center mt-4 font-bold">
+          Your Cart Products Is Empty 😞
+        </h1>
+      )}
+      <div>
+        {cartProducts?.length > 0 && (
+          <div className="grid grid-cols-2 gap-8 mt-8">
+            <div className="">
+              <Prices total={total} />
+              {/* <div className="p-4 flex flex-col  border border-secondary rounded-lg ">
+                <div className="flex justify-between items-center">
+                  <h1 className="font-semibold text-nowrap text-gray-500">
+                    SubTotal:
+                  </h1>
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <h1 className="float-end mr-4 font-bold p-4 rounded-lg text-gray-500">
+                    💲{total}
+                  </h1>
                 </div>
-              );
-            })}
-        </div>
-        <div className="bg-secondary  rounded-lg p-4 h-fit">
-          <h1 className="text-white">Checkout:</h1>
-          <div>
-            <label className="text-white">Phon Number</label>
-            <input
-              type="text"
-              placeholder="Phon Number"
-              value={data.phoneNumber}
-            />
-          </div>
-          <div>
-            <label className="text-white">Street Address</label>
-            <input
-              type="text"
-              placeholder="Street Address"
-              value={data.streetAddress}
-            />
-          </div>
-          <div className="flex gap-4">
-            <div>
-              <label className="text-white">Postal Code</label>
-              <input
-                type="text"
-                placeholder="Postal Code"
-                value={data.postalCod}
-              />
+                <div className="flex justify-between items-center">
+                  <h1 className="font-semibold text-nowrap text-gray-500">
+                    Delivery:
+                  </h1>
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <IoIosArrowForward />
+                  <h1 className="float-end mr-4 font-bold p-4 rounded-lg text-gray-500">
+                    💲5
+                  </h1>
+                </div>
+                <hr />
+                <h1 className="text-center mt-4  font-bold">
+                  Total: 💲{total + 5}
+                </h1>
+              </div> */}
+
+              {cartProducts?.length > 0 &&
+                cartProducts?.map((product, index) => {
+                  return (
+                    <div>
+                      <div className="flex items-center gap-4 border border-primary my-2 rounded-lg p-4 h-44">
+                        <OrderInfo product={product} />
+                        <FaRegTrashCan
+                          className="cursor-pointer hover:text-primary "
+                          type="button"
+                          onClick={() => {
+                            removeCartProduct(index);
+                            location.reload();
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
-            <div>
-              <label className="text-white">City</label>
-              <input type="text" placeholder="City" value={data.city} />
+            <div className="bg-secondary  rounded-lg p-4 h-fit">
+              <form onSubmit={ProceedToCheckout}>
+                <h1 className="text-white">Checkout:</h1>
+
+                <Address data={{ ...data }} disabled={true} />
+                <div className="mt-4">
+                  <button className="hover:bg-primary/90 text-lg" type="submit">
+                    Pay $<span className="font-bold text-lg">{total + 5}</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-          <div>
-            <label className="text-white">Country</label>
-            <input type="text" placeholder="Country" value={data.country} />
-          </div>
-          <div className="mt-4">
-            <button className="hover:bg-primary/90 text-lg" type="submit">
-              Pay $<span className="font-bold text-lg">{total}</span>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

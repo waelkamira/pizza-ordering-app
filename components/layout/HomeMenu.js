@@ -14,7 +14,6 @@ export default function HomeMenu() {
   const fetchAllMenuItems = async () => {
     fetch('/api/menuItems').then((res) =>
       res.json().then((res) => {
-        // console.log(res);
         setBestSellers(res.slice(-3));
       })
     );
@@ -27,7 +26,7 @@ export default function HomeMenu() {
             src={'/fvtvcuexkkejfdxqaxia.png'}
             width={109}
             height={189}
-            alt="sallad"
+            alt="salad"
             sizes="100vw"
           ></CldImage>
         </div>
@@ -37,7 +36,7 @@ export default function HomeMenu() {
             width={100}
             height={100}
             sizes="100vw"
-            alt="sallad"
+            alt="salad"
           ></CldImage>
         </div>
       </div>
@@ -49,15 +48,7 @@ export default function HomeMenu() {
       </div>
       <div className="grid grid-cols-3 gap-4 mt-4 bg-orange-100/40 p-4">
         {bestSellers?.map((item, index) => (
-          <MenuItem
-            key={index}
-            image={item?.image}
-            itemName={item?.itemName}
-            description={item?.description}
-            basePrice={item?.basePrice}
-            sizes={item?.sizes}
-            ingredients={item?.ingredients}
-          />
+          <MenuItem menuItem={{ ...item }} />
         ))}
       </div>
     </section>

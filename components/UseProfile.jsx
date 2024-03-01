@@ -10,12 +10,11 @@ export default function UseProfile() {
     fetch('/api/profile').then((response) => {
       response.json().then((data) => {
         setIsData(data);
-        // console.log(data);
       });
     });
 
     setLoading(false);
   }, []);
-  // console.log(data, loading);
+
   return { data, loading };
 }

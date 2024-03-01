@@ -70,10 +70,10 @@ export default function UserForm({
             <input
               style={{ marginLeft: 0 }}
               type="number"
-              value={props.postalCod}
+              value={props.postalCode}
               placeholder="Postal Cod"
               onChange={(e) =>
-                setProps({ ...props, postalCod: e.target.value })
+                setProps({ ...props, postalCode: e.target.value })
               }
             />
           </div>
