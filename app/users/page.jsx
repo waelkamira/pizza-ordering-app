@@ -1,6 +1,5 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import UserTabs from '../../components/layout/UserTabs';
 import UseProfile from '../../components/UseProfile';
 import { useEffect, useState } from 'react';
@@ -30,7 +29,6 @@ export default function UsersPage() {
   if (loading) {
     return 'Loading User Info ...';
   }
-  const path = usePathname();
 
   return (
     <section className="mt-8 max-w-2xl mx-auto">

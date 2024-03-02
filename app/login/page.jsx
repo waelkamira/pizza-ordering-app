@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import React, { useState } from 'react';
 import { CldImage } from 'next-cloudinary';
@@ -62,7 +61,7 @@ export default function Login() {
 
         <Link href={'/register'}>
           <h1 className="text-center mt-4">
-            You Don't Have An Account?
+            You Do not Have An Account?
             <span className="underline"> Register &raquo;</span>
           </h1>
         </Link>
