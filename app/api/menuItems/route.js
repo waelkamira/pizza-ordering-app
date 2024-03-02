@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MenuItem } from '../models/menuItems';
+import { MenuItem } from '../models/MenuItems';
 import { isAdmin } from '../auth/[...nextauth]/route';
 export async function POST(req) {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
