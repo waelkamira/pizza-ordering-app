@@ -9,7 +9,7 @@ export default function EditableImage({ props, routeProp }) {
   const [imageData, setImageData] = useState(' ');
   const [isAdmin, setIsAdmin] = useState(false);
   const [fetchedProfile, setFetchedProfile] = useState(false);
-  console.log(props.email);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -39,7 +39,6 @@ export default function EditableImage({ props, routeProp }) {
               //! this function for sending changed image to mongodb
               async function sendChangedImage() {
                 const imagePublic_id = res?.data?.public_id;
-                console.log('this is imagePublic_id: ', imagePublic_id);
                 await fetch(`/api/${routeProp}`, {
                   method: 'PUT',
                   body: JSON.stringify({

@@ -10,7 +10,6 @@ export default function Register() {
   const session = useSession();
   const status = session?.status;
   const image = session?.data?.user?.image;
-  // console.log('this is register session', session);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

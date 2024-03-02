@@ -11,9 +11,12 @@ export default function UserForm({
   const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className="flex gap-4 items-start justify-center p-4 rounded-lg">
-      <EditableImage props={props} routeProp={routeProp} />
+    <div className="flex flex-col sm:flex-row gap-4 sm:items-start justify-center p-4 rounded-lg">
+      <div className="">
+        <EditableImage props={props} routeProp={routeProp} />
+      </div>
       <form
+        name="form"
         className="grow flex flex-col justify-center items-center"
         onSubmit={handleProfileInfoUpdate}
       >
@@ -47,8 +50,6 @@ export default function UserForm({
               onChange={(e) => {
                 setProps({ ...props, admin: e.target.checked });
                 setIsChecked(e.target.checked);
-                console.log(isChecked);
-                console.log(e.target.checked);
               }}
             />
           </div>

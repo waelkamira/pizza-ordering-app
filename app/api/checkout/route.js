@@ -5,7 +5,6 @@ export async function POST(req) {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
   const { data, cartProducts } = await req.json();
   const { streetAddress, email, phoneNumber, city, country, postalCode } = data;
-  console.log(data);
   const order = await Order.create({
     streetAddress,
     email,
@@ -37,7 +36,6 @@ export async function POST(req) {
   const stripeLineItems = [];
   for (const cartProduct of cartProducts) {
     const productName = cartProduct.itemName;
-    console.log('cartProduct', cartProduct);
     const productPrice = cartProductFinalPrice(cartProduct);
     stripeLineItems.push({
       quantity: 1,
@@ -50,7 +48,6 @@ export async function POST(req) {
       },
     });
   }
-  console.log(stripeLineItems);
 
   const stripeSession = await stripe.checkout.sessions.create({
     line_items: stripeLineItems,
@@ -75,6 +72,5 @@ export async function POST(req) {
       },
     ],
   });
-  console.log(stripeSession.url);
   return Response.json(stripeSession.url);
 }

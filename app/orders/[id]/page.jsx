@@ -61,12 +61,15 @@ export default function OrderPage() {
         <h1>Tank You For Your Order.</h1>
         <p>We Will Call You When Your Order On The Way.</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4">
         <div className="">
           {order?.cartProducts?.length > 0 &&
             order?.cartProducts?.map((item) => {
               return (
-                <dir className="border border-primary p-4 rounded-lg">
+                <dir
+                  key={item._id}
+                  className="border border-primary p-4 rounded-lg"
+                >
                   <OrderInfo product={item} />
                 </dir>
               );

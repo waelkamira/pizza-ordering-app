@@ -19,7 +19,6 @@ export default function AddItemProps({ name, label, props, setProps }) {
 
   function handleDelete(indexToDelete) {
     setProps(props.filter((item, index) => index !== indexToDelete));
-    console.log('indexToDelete', indexToDelete);
   }
 
   function handleIsOpen() {
@@ -48,7 +47,7 @@ export default function AddItemProps({ name, label, props, setProps }) {
             {props?.length > 0 &&
               props?.map((size, index) => {
                 return (
-                  <div>
+                  <div key={size._id}>
                     <div className="flex gap-2 items-center" key={index}>
                       <div>
                         <h1 className="text-sm text-white">Name:</h1>

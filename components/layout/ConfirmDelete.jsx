@@ -12,7 +12,7 @@ export default function ConfirmDelete({ onDelete, children, prop }) {
         Delete
       </button>
       {isOpen && (
-        <div className="absolute w-full height-full py-96 top-0 left-0 bottom-0 bg-black/80  flex justify-center items-center rounded-lg border shadow-lg">
+        <div className="absolute w-screen h-screen inset-0 bg-black/80  flex justify-center items-center rounded-lg border shadow-lg">
           <div className="absolute max-w-96 height-full bg-gray-600 px-56 py-10  rounded-lg flex flex-col items-center justify-center gap-4 ">
             <div className="w-96 p-4">
               <h1 className="text-white">

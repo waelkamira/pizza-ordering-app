@@ -37,7 +37,6 @@ export default function NewMenuItemsPage() {
   const fetchCategories = async () =>
     await fetch('/api/categories').then((res) =>
       res.json().then((res) => {
-        console.log(res);
         setCategories(res);
       })
     );
@@ -64,7 +63,6 @@ export default function NewMenuItemsPage() {
   async function handleFormSubmit(e) {
     e.preventDefault();
     try {
-      console.log('this is image : ', itemDataStates.image);
       async function sendMenuItemInfo() {
         const creationPromise = new Promise(async (resolve, reject) => {
           const res = await fetch(`/api/menuItems`, {
@@ -132,7 +130,6 @@ export default function NewMenuItemsPage() {
         .post('https://api.cloudinary.com/v1_1/dh2xlutfu/upload', formData)
         .then((res) => {
           const imagePublic_id = res?.data?.public_id;
-          console.log('this is imagePublic_id: ', imagePublic_id);
           setItemDataState({ ...itemDataStates, image: imagePublic_id });
           if (imagePublic_id) {
             resolve();
@@ -163,7 +160,7 @@ export default function NewMenuItemsPage() {
             Show All Menu Items
           </Link>
         </div>
-        <div className="flex items-start gap-4 mt-8">
+        <div className="flex flex-col sm:items-start sm:flex-row items-center gap-4 mt-8">
           <div className="flex flex-col py-3 px-3  bg-gray-500 rounded-lg ">
             <div className="flex justify-center items-center mb-2 border border-orange-300 rounded-lg  p-2">
               {itemDataStates.image ? (

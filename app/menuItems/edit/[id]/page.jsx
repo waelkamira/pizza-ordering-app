@@ -43,7 +43,6 @@ export default function EditMenuItemsPage() {
   const fetchCategories = async () =>
     await fetch('/api/categories').then((res) =>
       res.json().then((res) => {
-        console.log(res);
         setCategories(res);
       })
     );
@@ -52,11 +51,7 @@ export default function EditMenuItemsPage() {
   const fetchData = async () =>
     await fetch('/api/menuItems').then((res) =>
       res.json().then((res) => {
-        // console.log('this is res: ', res);
         const result = res.filter((item) => item._id === id);
-        console.log('this is result: ', result[0]);
-        console.log('this is sizes: ', result[0].sizes[0]);
-        console.log('this is ingredients: ', result[0].ingredients[0]);
         setItemDataState(result[0]);
         setSizes(result[0].sizes);
         setIngredients(result[0].ingredients);
@@ -76,7 +71,6 @@ export default function EditMenuItemsPage() {
 
     try {
       const creationPromise = new Promise(async (resolve, reject) => {
-        // console.log('this is image : ', itemDataStates.image);
         //! this function for sending changed image to mongodb
         async function sendMenuItemInfo() {
           const response = await fetch(`/api/menuItems`, {
@@ -120,7 +114,6 @@ export default function EditMenuItemsPage() {
   }
 
   function DeleteMenuItem(menuItem) {
-    console.log(menuItem);
     const creationPromise = new Promise(async (resolve, reject) => {
       const response = await fetch('/api/menuItems', {
         method: 'DELETE',
@@ -154,7 +147,7 @@ export default function EditMenuItemsPage() {
             Show All Menu Items
           </Link>
         </div>
-        <div className="flex items-start gap-4 mt-8">
+        <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 mt-8">
           <EditableImage props={itemDataStates} routeProp={'menuItems'} />
 
           <div className="grow">

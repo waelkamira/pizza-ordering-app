@@ -22,7 +22,6 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    // console.log('useEffect');
     if (status === 'authenticated') {
       fetchData();
     }
@@ -32,7 +31,6 @@ export default function ProfilePage() {
   const fetchData = async () =>
     fetch('/api/profile').then((res) =>
       res.json().then((res) => {
-        console.log('this res from useEffect:', res);
         setIsAdmin(res?.admin);
         setFetchedProfile(true);
         setFormStates(res);

@@ -13,7 +13,6 @@ export default function MenuItemsPage() {
   useEffect(() => {
     fetch('/api/menuItems').then((res) =>
       res.json().then((res) => {
-        console.log(res);
         setMenuItems(res);
       })
     );
@@ -28,7 +27,7 @@ export default function MenuItemsPage() {
   }
 
   return (
-    <section className="mt-8 max-w-xl mx-auto ">
+    <section className="mt-8 max-w-3xl mx-auto ">
       <UserTabs isAdmin={data.admin} />
       <div className="mt-8">
         <Link
@@ -40,9 +39,10 @@ export default function MenuItemsPage() {
           <Right />
         </Link>
       </div>
-      <div className="mt-8 grid grid-cols-3">
+      <div className=" flex flex-col mt-8 sm:grid sm:grid-cols-3">
         {menuItems?.map((menuItem) => (
           <Link
+            key={menuItem._id}
             href={`/menuItems/edit/${menuItem._id}`}
             className="flex flex-col items-center bg-gray-500 my-2 p-4 mx-2 rounded-lg text-white"
           >

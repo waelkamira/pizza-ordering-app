@@ -19,7 +19,6 @@ export default function CategoriesPage() {
   const fetchCategories = async () =>
     await fetch('/api/categories').then((res) =>
       res.json().then((res) => {
-        // console.log(res);
         setCategories(res);
       })
     );
@@ -52,10 +51,6 @@ export default function CategoriesPage() {
 
       if (response.ok) {
         resolve();
-
-        await response
-          .json()
-          .then((res) => console.log('this is res from categories:', res));
       } else {
         reject();
       }
@@ -160,12 +155,6 @@ export default function CategoriesPage() {
                   >
                     Delete Category
                   </ConfirmDelete>
-                  {/* <button
-                    className="hover:bg-primary hover:text-white bg-white hover:border-[3px] hover:border-white"
-                    onClick={() => handleDelete(index)}
-                  >
-                    Delete
-                  </button> */}
                 </div>
               </div>
             ) : (

@@ -11,7 +11,6 @@ export default function ContextProvider({ children }) {
   let total = 0;
 
   for (const cartProduct of cartProducts) {
-    // console.log('ContextProvider cartProducts', cartProducts);
     total += finalPrice(cartProduct);
   }
 
@@ -52,7 +51,6 @@ export default function ContextProvider({ children }) {
       const cartProduct = { ...product, size, extras };
       const newProducts = [...prevProducts, cartProduct];
       saveCartProductsToLocalStorage(newProducts);
-      // console.log('newProducts', newProducts);
       return newProducts;
     });
   }

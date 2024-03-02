@@ -14,7 +14,6 @@ export default function CartPage() {
   const { data } = UseProfile();
   const { cartProducts, removeCartProduct, finalPrice, total } =
     useContext(CartContext);
-  // console.log('cartProducts:', cartProducts);
 
   //? when payment failed
   useEffect(() => {
@@ -24,8 +23,6 @@ export default function CartPage() {
       }
     }
   }, []);
-
-  // console.log(window.location.href);
 
   async function ProceedToCheckout(e) {
     e.preventDefault();
@@ -39,8 +36,6 @@ export default function CartPage() {
       if (response.ok) {
         resolve();
         const url = await response.json();
-        // console.log('url', url);
-        // window.location = await response.json();
         location.assign(url.toString());
       } else {
         reject();
@@ -65,46 +60,13 @@ export default function CartPage() {
       )}
       <div>
         {cartProducts?.length > 0 && (
-          <div className="grid grid-cols-2 gap-8 mt-8">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-8 mt-8">
             <div className="">
               <Prices total={total} />
-              {/* <div className="p-4 flex flex-col  border border-secondary rounded-lg ">
-                <div className="flex justify-between items-center">
-                  <h1 className="font-semibold text-nowrap text-gray-500">
-                    SubTotal:
-                  </h1>
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <h1 className="float-end mr-4 font-bold p-4 rounded-lg text-gray-500">
-                    💲{total}
-                  </h1>
-                </div>
-                <div className="flex justify-between items-center">
-                  <h1 className="font-semibold text-nowrap text-gray-500">
-                    Delivery:
-                  </h1>
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <IoIosArrowForward />
-                  <h1 className="float-end mr-4 font-bold p-4 rounded-lg text-gray-500">
-                    💲5
-                  </h1>
-                </div>
-                <hr />
-                <h1 className="text-center mt-4  font-bold">
-                  Total: 💲{total + 5}
-                </h1>
-              </div> */}
-
               {cartProducts?.length > 0 &&
                 cartProducts?.map((product, index) => {
                   return (
-                    <div>
+                    <div key={product._id}>
                       <div className="flex items-center gap-4 border border-primary my-2 rounded-lg p-4 h-44">
                         <OrderInfo product={product} />
                         <FaRegTrashCan
@@ -121,7 +83,7 @@ export default function CartPage() {
                 })}
             </div>
             <div className="bg-secondary  rounded-lg p-4 h-fit">
-              <form onSubmit={ProceedToCheckout}>
+              <form onSubmit={ProceedToCheckout} id="form">
                 <h1 className="text-white">Checkout:</h1>
 
                 <Address data={{ ...data }} disabled={true} />

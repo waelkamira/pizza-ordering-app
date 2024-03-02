@@ -4,7 +4,6 @@ import { CartContext } from '../ContextProvider';
 
 export default function Prices({ cartProducts }) {
   const { total, finalPrice } = useContext(CartContext);
-  // console.log('cartProducts from prices', cartProducts);
   let subTotal = 0;
   if (cartProducts?.length > 0) {
     for (const product of cartProducts) {

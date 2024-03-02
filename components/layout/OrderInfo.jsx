@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../components/ContextProvider';
 import { CldImage } from 'next-cloudinary';
 export default function OrderInfo({ product }) {
-  // console.log('this is product from orderInfo:', product);
   const { cartProducts, removeCartProduct, finalPrice, total } =
     useContext(CartContext);
   return (
@@ -26,7 +25,7 @@ export default function OrderInfo({ product }) {
             <div>
               {product?.extras.map((item) => {
                 return (
-                  <div>
+                  <div key={item._id}>
                     <h1 className="mt-2">
                       Extra {item.name}:
                       <span className="ml-2 ">${item.price}</span>

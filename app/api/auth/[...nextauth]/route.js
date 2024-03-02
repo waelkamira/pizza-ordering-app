@@ -29,7 +29,6 @@ export const authOptions = {
           user && (await bcrypt.compare(password, user.password));
 
         if (passwordOk) {
-          console.log('this is user from auth route page', user);
           return user;
         } else {
           return null;

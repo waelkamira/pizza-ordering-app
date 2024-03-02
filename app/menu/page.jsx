@@ -40,7 +40,6 @@ export default function MenuPage() {
   const fetchAllCategories = async () => {
     fetch('/api/categories').then((res) =>
       res.json().then((res) => {
-        // console.log(res);
         setCategories(res);
       })
     );
@@ -62,12 +61,17 @@ export default function MenuPage() {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-3 gap-4 mt-4 mb-8">
+          <div className="flex flex-col p-8 xs:grid xs:grid-cols-2 sm:grid sm:grid-cols-3 gap-4 mt-4 mb-8">
             {menuItems
               ?.filter((item) => item.category === c.name)
               .map((item) => {
-                console.log(item);
-                return <MenuItem menuItem={item} onSetMessage={setMessage} />;
+                return (
+                  <MenuItem
+                    key={item._id}
+                    menuItem={item}
+                    onSetMessage={setMessage}
+                  />
+                );
               })}
           </div>
         </div>

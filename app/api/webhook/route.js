@@ -15,23 +15,16 @@ export async function POST(req) {
       process.env.NEXT_PUBLIC_STRIPE_KEY
     );
   } catch (err) {
-    console.log(err);
     return Response.json(err, { status: 400 });
   }
 
   if (event?.type === 'checkout.session.completed') {
     const orderId = event?.data?.object?.metadata?.orderId;
-    console.log(orderId);
     const isPaid = event?.data?.object?.payment_status === 'paid';
-    console.log(
-      'metadata >>>>>>>>>>>>>>>>>>>>>>',
-      event?.data?.object?.metadata
-    );
 
     if (isPaid) {
       await Order.updateOne({ _id: orderId }, { paid: true });
     }
   }
-  console.log(event);
   return Response.json('ok', { status: 200 });
 }

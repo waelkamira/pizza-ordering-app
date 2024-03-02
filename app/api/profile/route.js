@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { User } from './../models/User';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions, isAdmin } from '../auth/[...nextauth]/route';
 import { UserInfo } from './../models/UserInfo';
 
 export async function PUT(req) {
@@ -16,10 +16,14 @@ export async function PUT(req) {
   if (email) {
     filter = { email };
   }
-  console.log('this is image from profile route:', image, 'filter', filter);
   const user = await User.updateOne(filter, { name, image });
   const userInfo = await UserInfo.updateOne(filter, otherUserInfo);
-  return Response.json({ ...user, ...userInfo });
+
+  if (await isAdmin()) {
+    return Response.json({ ...user, ...userInfo });
+  } else {
+    return Response.json({});
+  }
 }
 
 export async function GET() {

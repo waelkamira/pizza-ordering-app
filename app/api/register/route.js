@@ -10,8 +10,6 @@ export async function POST(req) {
   //? connect to mongodb
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
 
-  console.log('Connected To Mongodb');
-
   //? hash password
   const hashedPassword = await bcrypt.hash(body.password, 10);
 

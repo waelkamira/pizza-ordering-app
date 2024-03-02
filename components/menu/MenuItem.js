@@ -6,7 +6,6 @@ import MenuItemTile from './MenuItemTail';
 import { useSession } from 'next-auth/react';
 
 export default function MenuItem({ menuItem, onSetMessage }) {
-  console.log('menuItem', menuItem);
   const {
     image,
     itemName,
@@ -23,7 +22,6 @@ export default function MenuItem({ menuItem, onSetMessage }) {
   const [selectedIngredient, setSelectedIngredient] = useState([]);
   const [selectedSize, setSelectedSize] = useState([{}]);
   const session = useSession();
-  console.log('session', session?.status);
   function handleAddToCartButtonClick() {
     if (session?.status === 'authenticated') {
       if (sizes?.length === 0 && ingredients?.length === 0) {
@@ -140,7 +138,10 @@ export default function MenuItem({ menuItem, onSetMessage }) {
               </h1>
               {sizes?.map((size) => {
                 return (
-                  <div className="flex flex-col gap-2 mx-4 border border-primary/40 rounded-md p-2">
+                  <div
+                    key={size._id}
+                    className="flex flex-col gap-2 mx-4 border border-primary/40 rounded-md p-2"
+                  >
                     <label className="flex items-center gap-2 font-semibold text-lg">
                       <input
                         onClick={(e) => {
@@ -166,7 +167,10 @@ export default function MenuItem({ menuItem, onSetMessage }) {
               </h1>
               {ingredients?.map((ing) => {
                 return (
-                  <div className="flex flex-col gap-2 mx-4 border border-primary/40 p-2 rounded-md">
+                  <div
+                    key={ing._id}
+                    className="flex flex-col gap-2 mx-4 border border-primary/40 p-2 rounded-md"
+                  >
                     <label className="flex items-center gap-2 font-semibold text-lg">
                       <input
                         onClick={(e) => {

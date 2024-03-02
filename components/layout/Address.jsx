@@ -1,8 +1,6 @@
 import React from 'react';
 
 export default function Address({ data, disabled = false }) {
-  // console.log('disabled', disabled);
-  // console.log('data', data);
   return (
     <div>
       <div>

@@ -6,7 +6,7 @@ import { CldImage } from 'next-cloudinary';
 import React, { useEffect, useState } from 'react';
 export default function HomeMenu() {
   const [bestSellers, setBestSellers] = useState([]);
-
+  const [message, setMessage] = useState(false);
   useEffect(() => {
     fetchAllMenuItems();
   }, []);
@@ -46,9 +46,26 @@ export default function HomeMenu() {
           mainHeader={'Our Best Sellers'}
         />
       </div>
-      <div className="grid grid-cols-3 gap-4 mt-4 bg-orange-100/40 p-4">
+      {message && (
+        <div className="fixed flex items-center justify-center bg-black/30 inset-0 h-screen w-screen text-center rounded-lg p-8">
+          <div className=" bg-secondary p-8 rounded-lg">
+            <h1 className="text-white  text-2xl">
+              You Have To Login First To Make An Order
+            </h1>
+          </div>
+        </div>
+      )}
+      <div
+        className={
+          'flex flex-col xs:grid xs:grid-cols-2 sm:grid sm:grid-cols-3 sm:p-4 gap-4 mt-4 bg-orange-100/40 p-8'
+        }
+      >
         {bestSellers?.map((item, index) => (
-          <MenuItem menuItem={{ ...item }} />
+          <MenuItem
+            key={item._id}
+            menuItem={{ ...item }}
+            onSetMessage={setMessage}
+          />
         ))}
       </div>
     </section>
