@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { User } from './../models/User';
 import { getServerSession } from 'next-auth';
-import { authOptions, isAdmin } from '../auth/[...nextauth]/route';
+import { isAdmin } from '../auth/[...nextauth]/route';
 import { UserInfo } from './../models/UserInfo';
-
+import { authOptions } from '../authOptions/route';
 export async function PUT(req) {
   await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI);
   const { _id, email, name, image, ...otherUserInfo } = await req.json();
