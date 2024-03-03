@@ -12,7 +12,7 @@ export default function OrderPage() {
   const [order, setOrder] = useState([]);
   const { clearCart } = useContext(CartContext);
   const { id } = useParams();
-  const orderId = id.slice(0, -12);
+  const orderId = id.slice(0, -14);
 
   useEffect(() => {
     if (typeof window?.console !== 'undefined') {
