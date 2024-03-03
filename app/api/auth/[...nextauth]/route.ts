@@ -5,8 +5,9 @@ import { UserInfo } from '../../models/UserInfo';
 // import { MongoDBAdapter } from '@auth/mongodb-adapter';
 // import clientPromise from '../../../../lip/mongodb';
 
-export async function isAdmin() {
+export const isAdmin = async () => {
   const session = await getServerSession(authOptions);
+  console.log(session);
   const email = session?.user?.email;
   if (!email) {
     return false;
@@ -18,7 +19,7 @@ export async function isAdmin() {
   }
 
   return userInfo?.admin;
-}
+};
 
 const handler = NextAuth(authOptions);
 
