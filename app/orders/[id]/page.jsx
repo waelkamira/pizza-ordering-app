@@ -7,14 +7,12 @@ import OrderInfo from '../../../components/layout/OrderInfo';
 import Address from '../../../components/layout/Address';
 import Prices from '../../../components/layout/Prices';
 import toast from 'react-hot-toast';
-import { rejects } from 'assert';
 
 export default function OrderPage() {
   const [order, setOrder] = useState([]);
   const { clearCart } = useContext(CartContext);
   const { id } = useParams();
-  const orderId = id.slice(0, -14);
-  const [loading, setLoading] = useState(false);
+  const orderId = id.slice(0, -12);
 
   useEffect(() => {
     if (typeof window?.console !== 'undefined') {
